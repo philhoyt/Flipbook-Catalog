@@ -8,7 +8,6 @@
  * Author URI:        https://philhoyt.com
  * License:           GPL-2.0-or-later
  * Text Domain:       flipbook-catalog
- * Domain Path:       /languages
  * Requires at least: 6.5
  * Requires PHP:      8.1
  *
@@ -29,12 +28,6 @@ require_once FLIPBOOK_CATALOG_PATH . 'includes/class-meta.php';
 add_action(
 	'plugins_loaded',
 	function () {
-		load_plugin_textdomain(
-			'flipbook-catalog',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
-
 		( new Flipbook_Catalog_Dependencies() )->register();
 		( new Flipbook_Catalog_Settings() )->register();
 		( new Flipbook_Catalog_Post_Type() )->register();
