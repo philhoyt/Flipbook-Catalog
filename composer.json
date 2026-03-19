@@ -8,6 +8,9 @@
         "phpcsstandards/phpcsutils": "^1.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
     },
+    "scripts": {
+        "plugin-zip": "bin/plugin-zip.sh"
+    },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
