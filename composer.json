@@ -1,0 +1,16 @@
+{
+    "name": "philhoyt/flipbook-catalog",
+    "description": "A configurable PDF catalog content type with block binding support for the Flipbook Block plugin.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpcsstandards/phpcsutils": "^1.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

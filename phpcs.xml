@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="Flipbook Catalog">
+    <description>WordPress Coding Standards for Flipbook Catalog plugin.</description>
+
+    <!-- What to scan -->
+    <file>.</file>
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+
+    <!-- Show progress and sniff codes -->
+    <arg value="sp"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+
+    <!-- Use WordPress ruleset -->
+    <rule ref="WordPress">
+        <!-- File naming: our short names (class-settings.php etc.) are intentional -->
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+    </rule>
+
+    <!-- Set minimum PHP version -->
+    <config name="minimum_supported_wp_version" value="6.5"/>
+    <config name="testVersion" value="8.1-"/>
+
+    <!-- Plugin-specific text domain -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="flipbook-catalog"/>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>
