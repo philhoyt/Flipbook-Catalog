@@ -15,6 +15,13 @@ defined( 'ABSPATH' ) || exit;
 class Flipbook_Catalog_Meta {
 
 	/**
+	 * Whether publish was blocked due to a missing PDF.
+	 *
+	 * @var bool
+	 */
+	private bool $publish_prevented = false;
+
+	/**
 	 * Register hooks.
 	 */
 	public function register(): void {
@@ -22,6 +29,9 @@ class Flipbook_Catalog_Meta {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box_ui' ) );
 		add_action( 'save_post_flipbook_catalog', array( $this, 'save_meta' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_meta_box_assets' ) );
+		add_filter( 'wp_insert_post_data', array( $this, 'prevent_publish_without_pdf' ) );
+		add_filter( 'redirect_post_location', array( $this, 'add_no_pdf_query_arg' ) );
+		add_action( 'admin_notices', array( $this, 'show_no_pdf_notice' ) );
 	}
 
 	/**
@@ -89,6 +99,10 @@ class Flipbook_Catalog_Meta {
 				}
 				?>
 			</div>
+			<p style="margin: 0 0 8px; color: #646970; font-size: 12px;">
+				<span style="color: #b32d2e;">*</span>
+				<?php esc_html_e( 'Required before publishing.', 'flipbook-catalog' ); ?>
+			</p>
 
 			<input type="hidden" id="flipbook_catalog_pdf_url" name="flipbook_catalog_pdf_url"
 				value="<?php echo esc_attr( $pdf_url ? $pdf_url : '' ); ?>" />
@@ -181,6 +195,68 @@ class Flipbook_Catalog_Meta {
 JS;
 
 		wp_add_inline_script( 'media-editor', $script );
+	}
+
+	/**
+	 * Revert post status to draft when publishing without a PDF file.
+	 *
+	 * @param array $data Sanitized post data about to be inserted.
+	 * @return array
+	 */
+	public function prevent_publish_without_pdf( array $data ): array {
+		if ( 'flipbook_catalog' !== $data['post_type'] || 'publish' !== $data['post_status'] ) {
+			return $data;
+		}
+
+		// Only act when our meta box form was submitted.
+		if (
+			! isset( $_POST['flipbook_catalog_pdf_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( $_POST['flipbook_catalog_pdf_nonce'] ), 'flipbook_catalog_save_pdf' )
+		) {
+			return $data;
+		}
+
+		$pdf_url = isset( $_POST['flipbook_catalog_pdf_url'] )
+			? esc_url_raw( wp_unslash( $_POST['flipbook_catalog_pdf_url'] ) )
+			: '';
+
+		if ( empty( $pdf_url ) ) {
+			$data['post_status']     = 'draft';
+			$this->publish_prevented = true;
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Append an error query arg to the redirect URL when publish was blocked.
+	 *
+	 * @param string $location The redirect URL after saving.
+	 * @return string
+	 */
+	public function add_no_pdf_query_arg( string $location ): string {
+		if ( $this->publish_prevented ) {
+			$location = add_query_arg( 'flipbook_catalog_error', 'no_pdf', $location );
+		}
+		return $location;
+	}
+
+	/**
+	 * Show an admin error notice when publishing was blocked due to a missing PDF.
+	 */
+	public function show_no_pdf_notice(): void {
+		$screen = get_current_screen();
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display query arg set by this plugin.
+		$error = isset( $_GET['flipbook_catalog_error'] ) ? sanitize_key( $_GET['flipbook_catalog_error'] ) : '';
+
+		if ( ! $screen || 'flipbook_catalog' !== $screen->post_type || 'no_pdf' !== $error ) {
+			return;
+		}
+
+		echo '<div class="notice notice-error"><p>';
+		esc_html_e( 'A PDF file is required before publishing. Please upload or select a PDF.', 'flipbook-catalog' );
+		echo '</p></div>';
 	}
 
 	/**
