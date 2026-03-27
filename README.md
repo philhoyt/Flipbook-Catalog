@@ -21,9 +21,10 @@ Flipbook Catalog adds a dedicated content type for your PDF publications. Upload
 ## Installation
 
 1. Install and activate the [Flipbook Block](https://github.com/philhoyt/flipbook-block) plugin.
-2. Download this plugin and upload the `flipbook-catalog` folder to `wp-content/plugins/`, or install it directly from the WordPress admin.
-3. Activate **Flipbook Catalog** from the Plugins screen.
-4. A new **Catalogs** menu item will appear in your WordPress admin. Start adding your PDFs.
+2. Download the latest `flipbook-catalog.zip` from the [Releases page](https://github.com/philhoyt/flipbook-catalog/releases/latest).
+3. In your WordPress admin, go to **Plugins → Add New Plugin → Upload Plugin**, choose the zip file, and click **Install Now**.
+4. Activate **Flipbook Catalog** from the Plugins screen.
+5. A new **Catalogs** menu item will appear in your WordPress admin. Start adding your PDFs.
 
 ## Getting Started
 

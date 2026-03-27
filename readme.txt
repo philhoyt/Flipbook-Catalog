@@ -51,9 +51,11 @@ The `pdfUrl` attribute in `block.json` must have no `source`, `selector`, or `at
 == Installation ==
 
 1. Install and activate [Flipbook Block](https://github.com/philhoyt/flipbook-block) version 1.0.4 or higher first.
-2. Upload the `flipbook-catalog` folder to `/wp-content/plugins/`.
-3. Activate the plugin from the Plugins screen in WordPress.
-4. Navigate to the new post type in the admin menu and configure labels and slug under Settings.
+2. Go to the [Flipbook Catalog releases page](https://github.com/philhoyt/flipbook-catalog/releases/latest) on GitHub and download the latest `flipbook-catalog.zip` file.
+3. In your WordPress admin, go to **Plugins → Add New Plugin → Upload Plugin**.
+4. Choose the downloaded zip file and click **Install Now**.
+5. Click **Activate Plugin**.
+6. Navigate to the new post type in the admin menu and configure labels and slug under Settings.
 
 == Frequently Asked Questions ==
 
