@@ -1,4 +1,5 @@
 # Flipbook Catalog
+[![CI](https://github.com/philhoyt/Flipbook-Catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/philhoyt/Flipbook-Catalog/actions/workflows/ci.yml)
 
 Turn your PDFs into a browsable catalog library on your WordPress site — no coding required.
 
