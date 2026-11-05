@@ -3,7 +3,7 @@
  * Plugin Name:       Flipbook Catalog
  * Plugin URI:        https://github.com/philhoyt/flipbook-catalog
  * Description:       A configurable PDF catalog content type with block binding support for the Flipbook Block plugin.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            philhoyt
  * Author URI:        https://philhoyt.com
  * License:           GPL-2.0-or-later
@@ -18,7 +18,7 @@ use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FLIPBOOK_CATALOG_VERSION', '1.0.0' );
+define( 'FLIPBOOK_CATALOG_VERSION', '1.0.1' );
 define( 'FLIPBOOK_CATALOG_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FLIPBOOK_CATALOG_URL', plugin_dir_url( __FILE__ ) );
 

@@ -3,7 +3,7 @@ Contributors: philhoyt
 Tags: flipbook, pdf, catalog, magazine, post-type
 Requires at least: 6.5
 Tested up to: 7.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,11 @@ The block template (`single-flipbook_catalog.html`) is only used by block themes
 No. The post type key `flipbook_catalog` is fixed and not configurable. It is referenced by the block template and by any external integrations. The visible label and URL slug are configurable from the Settings page.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fix: a catalog post cannot be published without a PDF. Publishing without one keeps the post as a draft and shows an error notice.
+* Change: updates are delivered through GitHub releases.
+* Change: Tested up to WordPress 7.1.
 
 = 1.0.0 =
 * Initial release.
