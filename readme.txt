@@ -3,95 +3,89 @@ Contributors: philhoyt
 Tags: flipbook, pdf, catalog, magazine, post-type
 Requires at least: 6.5
 Tested up to: 7.1
+Requires PHP: 8.1
 Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A configurable PDF catalog content type with block binding support for the Flipbook Block plugin.
+A PDF catalog post type that feeds each post's PDF into the Flipbook Block through block binding, with configurable labels and URL slug
 
 == Description ==
 
-Flipbook Catalog registers a custom post type for PDF-based content — magazines, catalogs, brochures, or whatever label you choose. It integrates with the [Flipbook Block](https://github.com/philhoyt/flipbook-block) plugin to render PDF flipbooks on the front end.
+Flipbook Catalog registers a `flipbook_catalog` post type for PDF publications: catalogs, magazines, brochures, or whatever you call them. It has no block of its own. It depends on the [Flipbook Block](https://github.com/philhoyt/flipbook-block) plugin to show the PDF on the front end.
 
-**How it works:**
+How the pieces fit:
 
-1. Each catalog post stores a PDF URL in post meta (`flipbook_catalog_pdf_url`).
-2. A pre-configured block theme template (`single-flipbook_catalog.html`) uses WordPress's `core/post-meta` block binding to inject the PDF URL into the Flipbook Block at render time.
-3. No URL is ever hardcoded in the template — changing a post's PDF automatically updates the front end.
+1. Each post stores a PDF from the media library in the `flipbook_catalog_pdf_url` and `flipbook_catalog_pdf_id` meta keys. The edit screen is the classic editor with a PDF File meta box; the block editor is turned off for this post type.
+2. The plugin registers a block template, `single-flipbook_catalog`, that places a Flipbook Block with its `pdfUrl` attribute bound to the post meta through `core/post-meta`.
+3. At render time WordPress reads the PDF URL from the post, so changing a post's PDF changes the front end. No URL is stored in the template.
 
-**Configurable labels and URL slug:**
+A post cannot be published without a PDF. Publishing with the PDF field empty keeps the post as a draft and shows an error notice.
 
-The content type label (e.g. "Catalog", "Magazine", "Brochure") and its URL slug are configurable from the Settings page without touching code.
+The singular label, plural label, and URL slug are set on the post type's Settings page. Changing the slug flushes permalinks. The post type key, `flipbook_catalog`, and the meta keys are fixed.
+
+Uninstalling removes the three options. Posts and their meta stay in the database.
 
 == Requirements ==
 
-* WordPress 6.5 or higher (6.9+ required for block binding to function)
-* PHP 8.1 or higher
-* [Flipbook Block](https://github.com/philhoyt/flipbook-block) plugin version 1.0.4 or higher
+* WordPress 6.5 or newer to activate. The block template needs 6.7, and the `core/post-meta` binding needs 6.9, so on anything older than 6.9 the flipbook renders without a PDF.
+* PHP 8.1 or newer.
+* A block theme. Classic themes ignore the block template.
+* [Flipbook Block](https://github.com/philhoyt/flipbook-block) 1.0.4 or newer, installed and active. The plugin shows an admin notice when the `ph/flipbook-block` block is not registered.
 
 == Block Binding Compatibility ==
 
-The block template uses `core/post-meta` block binding to inject the PDF URL into the Flipbook Block at render time. For this to work, three conditions must be met:
+Three things have to be true for the PDF to reach the block:
 
-**1. WordPress 6.9 or higher**
-
-WordPress 6.9 introduced the `block_bindings_supported_attributes` filter, which allows custom blocks to opt into binding support. On WordPress 6.5–6.8, the binding is silently skipped and the flipbook renders without a PDF.
-
-**2. Flipbook Block 1.0.4 or higher**
-
-Version 1.0.4 adds the two changes required for binding to work:
-
-* `"usesContext": ["postId", "postType"]` in `block.json` — tells WordPress to pass the current post's ID and type to the block, which `core/post-meta` uses to look up the right meta value.
-* Registration of `pdfUrl` via the `block_bindings_supported_attributes_ph/flipbook-block` filter — WordPress 6.9+ maintains an opt-in allowlist of bindable attributes per block; without this registration the binding processor exits before calling the meta source.
-
-**3. A plain string `pdfUrl` attribute**
-
-The `pdfUrl` attribute in `block.json` must have no `source`, `selector`, or `attribute` properties — just `"type": "string"`. This has been the case since Flipbook Block 1.0.3.
+1. WordPress 6.9 or newer. 6.9 added the `block_bindings_supported_attributes` filter that lets a non-core block opt in to binding. On 6.5 to 6.8 the binding is skipped and the block gets an empty URL.
+2. Flipbook Block 1.0.4 or newer. That version declares `"usesContext": ["postId", "postType"]` in its `block.json`, which `core/post-meta` uses to find the right post, and registers `pdfUrl` through the `block_bindings_supported_attributes_ph/flipbook-block` filter.
+3. A plain string `pdfUrl` attribute in the block's `block.json`, with no `source`, `selector`, or `attribute` keys. That has been the case since Flipbook Block 1.0.3.
 
 == Installation ==
 
-1. Install and activate [Flipbook Block](https://github.com/philhoyt/flipbook-block) version 1.0.4 or higher first.
-2. Go to the [Flipbook Catalog releases page](https://github.com/philhoyt/flipbook-catalog/releases/latest) on GitHub and download the latest `flipbook-catalog.zip` file.
-3. In your WordPress admin, go to **Plugins → Add New Plugin → Upload Plugin**.
-4. Choose the downloaded zip file and click **Install Now**.
-5. Click **Activate Plugin**.
-6. Navigate to the new post type in the admin menu and configure labels and slug under Settings.
+1. Install and activate Flipbook Block 1.0.4 or newer.
+2. Download `flipbook-catalog.zip` from the [latest release](https://github.com/philhoyt/flipbook-catalog/releases/latest) on GitHub.
+3. Go to Plugins > Add New Plugin > Upload Plugin, choose the zip, and click Install Now.
+4. Activate the plugin.
+5. A Catalogs menu appears in wp-admin. Add a post, pick a PDF in the PDF File box, and publish. Labels and the slug are under Catalogs > Settings.
+
+Updates come from GitHub releases through the bundled Plugin Update Checker.
 
 == Frequently Asked Questions ==
 
-= Why isn't the flipbook rendering on the front end? =
+= The flipbook is empty on the front end. What should I check? =
 
-Work through these checks in order:
+In this order:
 
-1. **Is Flipbook Block installed and active?** Flipbook Catalog requires it. You will see an admin notice if it is missing.
-2. **Is WordPress 6.9 or higher?** Block binding is silently skipped on earlier versions. The flipbook renders but receives an empty PDF URL.
-3. **Is Flipbook Block 1.0.4 or higher?** Earlier versions do not register `pdfUrl` as a bindable attribute or declare the required post context. Update the plugin.
-4. **Does the post have a PDF set?** Open the post in the admin and confirm a PDF has been selected in the PDF File meta box and the post has been saved.
+1. Is Flipbook Block installed and active? An admin notice appears when it is not.
+2. Is WordPress 6.9 or newer? Earlier versions skip the binding, so the block renders with no PDF.
+3. Is Flipbook Block 1.0.4 or newer? Earlier versions do not register `pdfUrl` as bindable or declare the post context.
+4. Does the post have a PDF? Open it in wp-admin and check the PDF File box.
 
-= Will my content be deleted if I uninstall the plugin? =
+= What happens to my posts when I uninstall? =
 
-No. Uninstalling removes only the plugin's settings (labels and slug). All posts and their PDF metadata are preserved in the database.
+They stay. Uninstall deletes the three label and slug options and flushes permalinks; posts and post meta are untouched.
 
-= Can I use this with a classic (non-block) theme? =
+= Does it work with a classic theme? =
 
-The block template (`single-flipbook_catalog.html`) is only used by block themes. With a classic theme, WordPress falls back to your theme's `single.php` or `index.php`. You would need to add the Flipbook Block to your template manually.
+The block template only applies to block themes. A classic theme falls back to its own `single.php` or `index.php`, where you would need to add the Flipbook Block yourself.
 
-= Can I change the internal post type key? =
+= Can I change the post type key? =
 
-No. The post type key `flipbook_catalog` is fixed and not configurable. It is referenced by the block template and by any external integrations. The visible label and URL slug are configurable from the Settings page.
+No. `flipbook_catalog` is fixed because the template and any outside integration refer to it. The visible labels and the URL slug are the configurable parts.
 
 == Changelog ==
 
 = 1.0.1 =
-* Fix: a catalog post cannot be published without a PDF. Publishing without one keeps the post as a draft and shows an error notice.
-* Change: updates are delivered through GitHub releases.
-* Change: Tested up to WordPress 7.1.
+* Fixed a catalog post being publishable without a PDF. Publishing without one now keeps the post as a draft and shows an error notice.
+* Changed updates to be delivered through GitHub releases.
+* Tested up to WordPress 7.1.
 
 = 1.0.0 =
 * Initial release.
-* Registers the `flipbook_catalog` custom post type with configurable labels and URL slug.
-* Classic meta box with media library picker for selecting PDF files.
-* Block theme template using `core/post-meta` block binding to inject the PDF URL into Flipbook Block at render time.
-* Settings page for singular label, plural label, and URL slug with automatic permalink flush on slug change.
-* Admin notice when the Flipbook Block dependency is missing.
-* Options-only cleanup on uninstall — posts and meta are preserved.
+* Added the `flipbook_catalog` post type with configurable labels and URL slug.
+* Added a classic meta box with a media library picker for the PDF.
+* Added a block theme template that binds the PDF URL into the Flipbook Block through `core/post-meta`.
+* Added a Settings page for the singular label, plural label, and URL slug, with a permalink flush on slug change.
+* Added an admin notice when the Flipbook Block dependency is missing.
+* Added an uninstall routine that removes options only; posts and meta are kept.
