@@ -3,17 +3,26 @@
     "description": "A configurable PDF catalog content type with block binding support for the Flipbook Block plugin.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
+    "require": {
+        "yahnis-elsts/plugin-update-checker": "^5.3"
+    },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.0",
         "phpcsstandards/phpcsutils": "^1.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
     },
     "scripts": {
-        "plugin-zip": "bin/plugin-zip.sh"
+        "plugin-zip": "bin/plugin-zip.sh",
+        "copy-puc": "rsync -a --delete vendor/yahnis-elsts/plugin-update-checker/ lib/plugin-update-checker/",
+        "post-install-cmd": "@copy-puc",
+        "post-update-cmd": "@copy-puc"
     },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "platform": {
+            "php": "8.1.0"
         }
     }
 }

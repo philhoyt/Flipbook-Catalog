@@ -1,0 +1,17 @@
+*.zip
+.claude
+.distignore
+.DS_Store
+.git
+.github
+.gitignore
+.wp-env.override.json
+bin
+build
+CLAUDE.md
+composer.json
+composer.lock
+docs
+phpcs.xml
+README.md
+vendor

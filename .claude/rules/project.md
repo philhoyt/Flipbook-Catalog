@@ -15,6 +15,6 @@ paths:
 - Text domain: `flipbook-catalog`
 - PHP minimum: 8.1
 - WP minimum: 6.5
-- Distribution: GitHub (no release workflow)
+- Distribution: GitHub (release workflow + Plugin Update Checker)
 - Main file: `flipbook-catalog.php`
 - Version constant: `FLIPBOOK_CATALOG_VERSION`

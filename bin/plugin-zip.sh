@@ -23,7 +23,9 @@ mkdir -p "${BUILD_DIR}/${PLUGIN_SLUG}"
 
 rsync -a \
     --exclude='.git' \
+    --exclude='.github' \
     --exclude='.gitignore' \
+    --exclude='.distignore' \
     --exclude='.DS_Store' \
     --exclude='.claude' \
     --exclude='bin' \
